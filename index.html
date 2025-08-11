@@ -33,6 +33,7 @@
       background-size: cover;
       background-position: center bottom;
       text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+      overflow: hidden; /* prevent scrollbars from particles */
     }
 
     h1 {
@@ -41,15 +42,8 @@
       letter-spacing: 3px;
       text-transform: uppercase;
       text-shadow: 0 0 8px #ffffffcc;
-    }
-
-    h2 {
-      margin-bottom: 10px;
-      font-weight: 400;
-      font-style: italic;
-      color: #e0e7ffdd;
-      text-align: center;
-      max-width: 500px;
+      position: relative;
+      z-index: 2;
     }
 
     .subtitle {
@@ -59,6 +53,8 @@
       font-style: normal;
       max-width: 400px;
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
 
     .ranking {
@@ -68,6 +64,8 @@
       max-width: 450px;
       width: 100%;
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 2;
     }
 
     ol {
@@ -113,6 +111,8 @@
       font-size: 0.9rem;
       color: #d3d3d3cc;
       text-shadow: none;
+      position: relative;
+      z-index: 2;
     }
 
     .rank-number {
@@ -124,21 +124,29 @@
       user-select: none;
     }
 
-    /* Highlight colors for top 3 ranks */
     .rank-gold {
-      background: #ffd700cc !important; /* gold */
+      background: #ffd700cc !important;
       color: #000 !important;
       box-shadow: 0 0 8px #ffd700cc;
     }
     .rank-silver {
-      background: #c0c0c0cc !important; /* silver */
+      background: #c0c0c0cc !important;
       color: #000 !important;
       box-shadow: 0 0 8px #c0c0c0cc;
     }
     .rank-bronze {
-      background: #cd7f32cc !important; /* bronze */
+      background: #cd7f32cc !important;
       color: #000 !important;
       box-shadow: 0 0 8px #cd7f32cc;
+    }
+
+    /* Particle styles */
+    .particle {
+      position: absolute;
+      font-size: 1.5rem;
+      pointer-events: none;
+      transition: transform 0.1s ease-out;
+      z-index: 1;
     }
   </style>
 </head>
@@ -161,15 +169,12 @@
         if (!response.ok) throw new Error('Failed to load ranking data');
 
         const rankingData = await response.json();
-
-        // Sort descending by points
         rankingData.sort((a, b) => b.points - a.points);
 
         const ol = document.getElementById('ranking-list');
-
         let lastPoints = null;
-        let rank = 0;       // current rank number
-        let ties = 0;       // number of tied people on current rank
+        let rank = 0;
+        let ties = 0;
 
         rankingData.forEach((person) => {
           if (person.points !== lastPoints) {
@@ -181,8 +186,6 @@
           lastPoints = person.points;
 
           const li = document.createElement('li');
-
-          // Add highlight class based on rank
           if (rank === 1) li.classList.add('rank-gold');
           else if (rank === 2) li.classList.add('rank-silver');
           else if (rank === 3) li.classList.add('rank-bronze');
@@ -202,10 +205,9 @@
           ol.appendChild(li);
         });
 
-        // Fill to at least 10 with placeholders if needed
         const minLength = 10;
         if (rankingData.length < minLength) {
-          for(let i = rankingData.length; i < minLength; i++) {
+          for (let i = rankingData.length; i < minLength; i++) {
             const li = document.createElement('li');
             const rankSpan = document.createElement('span');
             rankSpan.className = 'rank-number';
@@ -221,14 +223,59 @@
             ol.appendChild(li);
           }
         }
-
       } catch (error) {
         console.error('Error loading ranking:', error);
         document.getElementById('ranking-list').innerHTML = '<li>Failed to load ranking data.</li>';
       }
     }
-
     loadRanking();
+
+    // Particle effect
+    const particleCount = 20;
+    const particles = [];
+    for (let i = 0; i < particleCount; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = '🏔️';
+      p.style.left = `${Math.random() * window.innerWidth}px`;
+      p.style.top = `${Math.random() * window.innerHeight}px`;
+      document.body.appendChild(p);
+      particles.push({
+        el: p,
+        x: parseFloat(p.style.left),
+        y: parseFloat(p.style.top),
+        baseX: parseFloat(p.style.left),
+        baseY: parseFloat(p.style.top)
+      });
+    }
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animateParticles() {
+      particles.forEach((p) => {
+        const dx = mouseX - p.baseX;
+        const dy = mouseY - p.baseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const maxDist = 150;
+        let offsetX = 0;
+        let offsetY = 0;
+        if (dist < maxDist) {
+          const force = (maxDist - dist) / maxDist;
+          offsetX = dx * force * 0.1;
+          offsetY = dy * force * 0.1;
+        }
+        p.x += (p.baseX + offsetX - p.x) * 0.1;
+        p.y += (p.baseY + offsetY - p.y) * 0.1;
+        p.el.style.transform = `translate(${p.x - p.baseX}px, ${p.y - p.baseY}px)`;
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
   </script>
 </body>
 </html>
