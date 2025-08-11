@@ -114,6 +114,15 @@
       color: #d3d3d3cc;
       text-shadow: none;
     }
+
+    .rank-number {
+      font-weight: 700;
+      margin-right: 8px;
+      color: #a0c4ff;
+      min-width: 30px;
+      text-align: right;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -121,21 +130,83 @@
   <div class="subtitle">Each person is ranked by their Peak Points — the higher, the better!</div>
 
   <section class="ranking">
-    <ol>
-      <li>Dove <span class="points">30</span></li>
-      <li>Emissarii <span class="points">30</span></li>
-      <li>Ezra <span class="points">20</span></li>
-      <li>Lux  <span class="points">10</span></li>
-      <li>Imyellow123 <span class="points">5</span></li>
-      <li>Not climbed yet<span class="points">0</span></li>
-      <li>Not climbed yet<span class="points">0</span></li>
-      <li>Not climbed yet<span class="points">0</span></li>
-      <li>Not climbed yet<span class="points">0</span></li>
-      <li>Not climbed yet<span class="points">0</span></li>
-      <li>Not climbed yet<span class="points">0</span></li>
+    <ol id="ranking-list">
+      <!-- Will be populated by JS -->
     </ol>
   </section>
 
   <footer>© 2025 The Peak Mountain</footer>
+
+  <script>
+    async function loadRanking() {
+      try {
+        const response = await fetch('ranking.json');
+        if (!response.ok) throw new Error('Failed to load ranking data');
+
+        const rankingData = await response.json();
+
+        // Sort descending by points
+        rankingData.sort((a, b) => b.points - a.points);
+
+        const ol = document.getElementById('ranking-list');
+
+        let lastPoints = null;
+        let lastRank = 0;
+        let itemsAtRank = 0;
+
+        rankingData.forEach((person, index) => {
+          if (person.points !== lastPoints) {
+            lastRank = lastRank + 1 + itemsAtRank;
+            itemsAtRank = 0;
+          } else {
+            itemsAtRank++;
+          }
+          lastPoints = person.points;
+
+          const li = document.createElement('li');
+
+          const rankSpan = document.createElement('span');
+          rankSpan.className = 'rank-number';
+          rankSpan.textContent = lastRank + '.';
+          li.appendChild(rankSpan);
+
+          li.appendChild(document.createTextNode(person.name + ' '));
+
+          const pointsSpan = document.createElement('span');
+          pointsSpan.className = 'points';
+          pointsSpan.textContent = person.points;
+          li.appendChild(pointsSpan);
+
+          ol.appendChild(li);
+        });
+
+        // Fill to at least 10 with placeholders if needed
+        const minLength = 10;
+        if (rankingData.length < minLength) {
+          for(let i = rankingData.length; i < minLength; i++) {
+            const li = document.createElement('li');
+            const rankSpan = document.createElement('span');
+            rankSpan.className = 'rank-number';
+            rankSpan.textContent = (i + 1) + '.';
+            li.appendChild(rankSpan);
+
+            li.appendChild(document.createTextNode('Not climbed yet '));
+            const pointsSpan = document.createElement('span');
+            pointsSpan.className = 'points';
+            pointsSpan.textContent = '0';
+            li.appendChild(pointsSpan);
+
+            ol.appendChild(li);
+          }
+        }
+
+      } catch (error) {
+        console.error('Error loading ranking:', error);
+        document.getElementById('ranking-list').innerHTML = '<li>Failed to load ranking data.</li>';
+      }
+    }
+
+    loadRanking();
+  </script>
 </body>
 </html>
