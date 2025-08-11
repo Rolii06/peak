@@ -123,6 +123,23 @@
       text-align: right;
       user-select: none;
     }
+
+    /* Highlight colors for top 3 ranks */
+    .rank-gold {
+      background: #ffd700cc !important; /* gold */
+      color: #000 !important;
+      box-shadow: 0 0 8px #ffd700cc;
+    }
+    .rank-silver {
+      background: #c0c0c0cc !important; /* silver */
+      color: #000 !important;
+      box-shadow: 0 0 8px #c0c0c0cc;
+    }
+    .rank-bronze {
+      background: #cd7f32cc !important; /* bronze */
+      color: #000 !important;
+      box-shadow: 0 0 8px #cd7f32cc;
+    }
   </style>
 </head>
 <body>
@@ -151,23 +168,28 @@
         const ol = document.getElementById('ranking-list');
 
         let lastPoints = null;
-        let lastRank = 0;
-        let itemsAtRank = 0;
+        let rank = 0;       // current rank number
+        let ties = 0;       // number of tied people on current rank
 
-        rankingData.forEach((person, index) => {
+        rankingData.forEach((person) => {
           if (person.points !== lastPoints) {
-            lastRank = lastRank + 1 + itemsAtRank;
-            itemsAtRank = 0;
+            rank = rank + 1 + ties;
+            ties = 0;
           } else {
-            itemsAtRank++;
+            ties++;
           }
           lastPoints = person.points;
 
           const li = document.createElement('li');
 
+          // Add highlight class based on rank
+          if (rank === 1) li.classList.add('rank-gold');
+          else if (rank === 2) li.classList.add('rank-silver');
+          else if (rank === 3) li.classList.add('rank-bronze');
+
           const rankSpan = document.createElement('span');
           rankSpan.className = 'rank-number';
-          rankSpan.textContent = lastRank + '.';
+          rankSpan.textContent = rank + '.';
           li.appendChild(rankSpan);
 
           li.appendChild(document.createTextNode(person.name + ' '));
