@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Peak Mountain</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
+    body {
+      margin: 0;
+      background: linear-gradient(to top, #4a90e2, #cde6f7);
+      font-family: 'Montserrat', sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center bottom;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 3.2rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px #ffffffcc;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-weight: 400;
+      font-style: italic;
+      color: #e0e7ffdd;
+      text-align: center;
+      max-width: 500px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #c0d6ffcc;
+      margin-bottom: 30px;
+      font-style: normal;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .ranking {
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 16px;
+      padding: 20px 40px;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    ol {
+      list-style-position: inside;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    ol li {
+      font-size: 1.3rem;
+      margin: 12px 0;
+      padding: 10px 15px;
+      border-radius: 8px;
+      background: rgba(255 255 255 / 0.15);
+      transition: background 0.3s ease;
+      cursor: default;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    ol li:hover {
+      background: rgba(255 255 255 / 0.35);
+    }
+
+    .points {
+      background: #3498dbcc;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
+      box-shadow: 0 0 5px #2980b9;
+      min-width: 50px;
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    footer {
+      margin-top: auto;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      color: #d3d3d3cc;
+      text-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>The Peak Mountain</h1>
+  <h2>Ranking the Peak Ppl from 1 to 10</h2>
+  <div class="subtitle">Each person is ranked by their Peak Points — the higher, the better!</div>
+
+  <section class="ranking">
+    <ol>
+      <li>Summit Sage <span class="points">980</span></li>
+      <li>Alpine Ace <span class="points">930</span></li>
+      <li>Cliff Conqueror <span class="points">900</span></li>
+      <li>Glacier Guru <span class="points">860</span></li>
+      <li>Ridge Runner <span class="points">830</span></li>
+      <li>Peak Performer <span class="points">790</span></li>
+      <li>Snowy Sentinel <span class="points">760</span></li>
+      <li>Crag Commander <span class="points">720</span></li>
+      <li>Boulder Boss <span class="points">690</span></li>
+      <li>Frosty Flyer <span class="points">650</span></li>
+    </ol>
+  </section>
+
+  <footer>© 2025 The Peak Mountain</footer>
+</body>
+</html>
